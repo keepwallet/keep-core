@@ -6,7 +6,7 @@ data class Asset(
     val symbol: String,
     val decimals: Int,
 ) {
-    fun getAssetAddress(): Address? {
+    fun getAssetAddress(): Address? { // Token address
         val parts = id.split(':')
         return if (parts.size > 2) {
             Address(parts[2])
