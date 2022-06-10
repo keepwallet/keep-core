@@ -3,7 +3,7 @@ package keep.core.blockchain
 import keep.core.model.*
 
 sealed class Chain(
-    val coin: Coin,
+    val chain: keep.core.model.Chain,
     val defaultChainId: String = "0",
     val meta: TxMetaType = TxMetaType.NONE,
     val feeType: FeeType = FeeType.PASSIVE,
@@ -11,19 +11,19 @@ sealed class Chain(
     val toAddress: (String) -> Address = { Address(it) },
 ) {
     val coinType: Int by lazy {
-        BlockchainInfoSourceInst.source.getCoinType(coin)
+        BlockchainInfoSourceInst.source.getCoinType(chain)
     }
 
     val networkId: String by lazy {
-        BlockchainInfoSourceInst.source.getNetworkId(coin)
+        BlockchainInfoSourceInst.source.getNetworkId(chain)
     }
 
     val networkName: String by lazy {
-        BlockchainInfoSourceInst.source.getNetworkName(coin)
+        BlockchainInfoSourceInst.source.getNetworkName(chain)
     }
 
     val nativeMeasure: Measure by lazy {
-        BlockchainInfoSourceInst.source.getNativeMeasure(coin)
+        BlockchainInfoSourceInst.source.getNativeMeasure(chain)
     }
 
     fun buildAssetId(
@@ -62,7 +62,7 @@ sealed class Chain(
 }
 
 object Binance : Chain(
-    coin = Coin.BINANCE,
+    chain = keep.core.model.Chain.Binance,
     meta = TxMetaType.MEMO,
     defaultChainId = "Binance-Chain-Tigris",
 )

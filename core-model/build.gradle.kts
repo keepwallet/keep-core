@@ -3,10 +3,15 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("dev.icerock.moko.kswift") version "0.5.0"
 }
 
 val libName = "CoreModel"
 version = "1.0"
+
+kswift {
+    install(dev.icerock.moko.kswift.plugin.feature.SealedToSwiftEnumFeature)
+}
 
 kotlin {
     val xcFramework = XCFramework(libName)
