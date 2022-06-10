@@ -4,8 +4,9 @@ import CoreModel
 struct ContentView: View {
     
     let coins = [
-        Coin.ethereum,
-        Coin.binance
+        ChainBinance
+        ChainEthereum,
+        ChainBinance
     ]
     
 	var body: some View {

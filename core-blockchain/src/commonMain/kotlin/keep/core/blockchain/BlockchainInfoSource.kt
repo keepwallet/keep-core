@@ -1,13 +1,13 @@
 package keep.core.blockchain
 
-import keep.core.model.Coin
-import keep.core.model.Measure
+import keep.core.model.Chain
 
 interface BlockchainInfoSource {
-    fun getCoinType(coin: Coin): Int
-    fun getNetworkId(coin: Coin): String
-    fun getNetworkName(coin: Coin): String
-    fun getNativeMeasure(coin: Coin): Measure
+    fun getCoinType(chain: Chain): Int
+    fun getNetworkId(chain: Chain): String
+    fun getNetworkName(chain: Chain): String
+    fun getNativeDecimals(chain: Chain): Int
+    fun getNativeSymbol(chain: Chain): String
 }
 
 object BlockchainInfoSourceInst {
