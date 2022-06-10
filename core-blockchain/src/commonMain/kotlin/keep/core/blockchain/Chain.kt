@@ -1,6 +1,9 @@
 package keep.core.blockchain
 
-import keep.core.model.*
+import keep.core.model.Account
+import keep.core.model.Address
+import keep.core.model.Asset
+import keep.core.model.TokenStandard
 
 sealed class Chain(
     val chain: keep.core.model.Chain,
@@ -22,8 +25,12 @@ sealed class Chain(
         BlockchainInfoSourceInst.source.getNetworkName(chain)
     }
 
-    val nativeMeasure: Measure by lazy {
-        BlockchainInfoSourceInst.source.getNativeMeasure(chain)
+    val nativeDecimals: Int by lazy {
+        BlockchainInfoSourceInst.source.getNativeDecimals(chain)
+    }
+
+    val nativeSymbol: String by lazy {
+        BlockchainInfoSourceInst.source.getNativeSymbol(chain)
     }
 
     fun buildAssetId(
@@ -39,8 +46,8 @@ sealed class Chain(
         assetAddress: Address,
         name: String = "NoName",
         chainId: String? = null,
-        measure: Measure? = null,
-        account: Account? = null,
+        decimals: Int? = null,
+        symbol: String? = null,
     ): Asset = Asset(
         id = buildAssetId(
             standard = standard,
@@ -52,12 +59,16 @@ sealed class Chain(
         } else {
             name
         },
-        measure = if (standard == TokenStandard.native) {
-            nativeMeasure
+        decimals = if (standard == TokenStandard.native) {
+            nativeDecimals
         } else {
-            measure ?: throw IllegalArgumentException("Measure is not set")
+            decimals ?: throw IllegalArgumentException("Measure is not set")
         },
-        account = account,
+        symbol = if (standard == TokenStandard.native) {
+            nativeSymbol
+        } else {
+            symbol ?: throw IllegalArgumentException("Measure is not set")
+        },
     )
 }
 

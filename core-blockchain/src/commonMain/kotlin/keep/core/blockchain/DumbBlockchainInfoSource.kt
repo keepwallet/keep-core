@@ -1,12 +1,12 @@
 package keep.core.blockchain
 
 import keep.core.model.Chain
-import keep.core.model.Measure
 
 private data class CoinInfo(
     val chain: Chain,
     val coinType: Int,
-    val nativeMeasure: Measure,
+    val decimals: Int,
+    val symbol: String,
     val networkId: String = chain::class.simpleName?.lowercase() ?: "",
     val networkName: String = chain::class.simpleName?.lowercase() ?: "",
 )
@@ -17,27 +17,26 @@ class DumbBlockchainInfoSource : BlockchainInfoSource {
         CoinInfo(
             chain = Chain.Binance,
             coinType = 714,
-            nativeMeasure = Measure("BNB", 8),
+            symbol = "BNB",
+            decimals = 8,
         ),
         CoinInfo(
             chain = Chain.Bitcoin,
             coinType = 0,
-            nativeMeasure = Measure("BTC", 8),
+            symbol = "BTC",
+            decimals = 8,
         ),
         CoinInfo(
             chain = Chain.Ethereum,
             coinType = 60,
-            nativeMeasure = Measure("ETH", 18),
-        ),
-        CoinInfo(
-            chain = Chain.BinanceSmartChain,
-            coinType = 60,
-            nativeMeasure = Measure("ETH", 18),
+            symbol = "ETH",
+            decimals = 18,
         ),
         CoinInfo(
             chain = Chain.BinanceSmartChain,
             coinType = 20000714,
-            nativeMeasure = Measure("BNB", 18),
+            symbol = "BNB",
+            decimals = 18,
         ),
     )
 
@@ -47,7 +46,9 @@ class DumbBlockchainInfoSource : BlockchainInfoSource {
 
     override fun getNetworkName(chain: Chain): String = data.find(chain).networkName
 
-    override fun getNativeMeasure(chain: Chain): Measure = data.find(chain).nativeMeasure
+    override fun getNativeDecimals(chain: Chain): Int = data.find(chain).decimals
+
+    override fun getNativeSymbol(chain: Chain): String = data.find(chain).symbol
 
     private fun Array<CoinInfo>.find(chain: Chain) = first { it.chain == chain }
 }

@@ -3,10 +3,8 @@ package keep.core.model
 data class Asset(
     val id: String, // URN by CAIP-10: eth:1:0x00abcdef
     val name: String,
-    val measure: Measure,
-    val balance: List<Balance> = emptyList(),
-    val ticker: Ticker? = null,
-    val account: Account? = null,
+    val symbol: String,
+    val decimals: Int,
 ) {
     fun getAssetAddress(): Address? {
         val parts = id.split(':')
