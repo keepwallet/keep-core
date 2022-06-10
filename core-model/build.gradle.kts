@@ -34,6 +34,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("com.ionspin.kotlin:bignum:0.3.6")
+                // Ktor
+                implementation("io.ktor:ktor-client-core:2.0.2")
             }
         }
         val commonTest by getting {
@@ -41,9 +43,17 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-okhttp:2.0.2")
+            }
+        }
         val androidTest by getting
-        val iosMain by getting
+        val iosMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-darwin:2.0.2")
+            }
+        }
         val iosTest by getting
     }
 }
