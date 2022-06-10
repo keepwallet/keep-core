@@ -1,12 +1,11 @@
 import SwiftUI
 import CoreModel
-import CoreBlockchain
 
 struct ContentView: View {
     
     let coins = [
-        Chain.binance,
         Chain.ethereum,
+        Chain.bitcoin
     ]
     
     let network = TryNetworkQuery()
