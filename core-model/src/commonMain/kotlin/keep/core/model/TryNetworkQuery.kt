@@ -8,7 +8,7 @@ class TryNetworkQuery {
 
     suspend fun query(): String {
         val client = HttpClient()
-        val response: HttpResponse = client.get("https://ktor.io/")
+        val response: HttpResponse = client.get("https://ktor.io/docs")
         return response.bodyAsText()
     }
 }
