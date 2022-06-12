@@ -6,7 +6,7 @@ plugins {
     id("dev.icerock.moko.kswift") version "0.5.0"
 }
 
-val libName = "CoreCrypto"
+val libName = "BlockchainSmartchain"
 version = "1.0"
 
 kotlin {
@@ -29,6 +29,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(project(":core-blockchain"))
+                implementation(project(":core-model"))
+                // Ktor
+                implementation("io.ktor:ktor-client-core:2.0.2")
             }
         }
         val commonTest by getting {
@@ -36,9 +40,17 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-okhttp:2.0.2")
+            }
+        }
         val androidTest by getting
-        val iosMain by getting
+        val iosMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-darwin:2.0.2")
+            }
+        }
         val iosTest by getting
     }
 }
