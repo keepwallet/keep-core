@@ -1,4 +1,4 @@
-package keep.core.blockchain
+package ru.madcake.core.crypto
 
 internal interface EntropyGenerator {
     fun generate(): ByteArray?

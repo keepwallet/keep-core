@@ -1,4 +1,4 @@
-package keep.core.blockchain
+package keep.core.model
 
 enum class TxMetaType {
     NONE,
