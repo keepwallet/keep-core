@@ -10,7 +10,7 @@ class BalanceRpcSource(client: HttpClient) : BalanceRpcSource {
 
     override fun getChain(): Chain = Chain.BinanceSmartChain
 
-    override fun getBalances(assets: List<Asset>): List<List<Balance>> {
+    override suspend fun getBalances(assets: List<Asset>): List<List<Balance>> {
         return emptyList()
     }
 }
