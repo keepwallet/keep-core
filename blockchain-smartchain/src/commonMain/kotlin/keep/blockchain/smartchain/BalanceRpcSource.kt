@@ -5,14 +5,12 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import keep.blockchain.smartchain.model.GethMethodRequest
+import keep.blockchain.smartchain.model.MethodRequest
 import keep.core.blockchain.BalanceRpcSource
 import keep.core.blockchain.RpcError
 import keep.core.model.*
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 
 class BalanceRpcSource(
     private val client: HttpClient,
@@ -38,15 +36,14 @@ class BalanceRpcSource(
     override fun getChain(): Chain = Chain.BinanceSmartChain
 
     override suspend fun getBalances(accountAddress: String, assets: List<Asset>): List<List<Balance>> {
-        val nativeBalance = assets.filter { it.getTokenStandard() == TokenStandard.native }
-            .map { getNativeBalance(accountAddress) }
-        getERC20Balance(accountAddress, assets.filter { it.getTokenStandard() == TokenStandard.erc20 })
-        return emptyList()
+        return assets.filter { it.getTokenStandard() == TokenStandard.native }
+            .map { getNativeBalance(accountAddress) } +
+            getERC20Balance(accountAddress, assets.filter { it.getTokenStandard() == TokenStandard.erc20 })
     }
 
     private suspend fun getNativeBalance(address: String): List<Balance> {
         val params = listOf(address, BlockParameter.latest.name)
-        val request = GethMethodRequest(
+        val request = MethodRequest(
             id = requestIdProvider.getNextId(),
             jsonrpc = "2.0",
             method = RpcMethod.eth_getBalance.name,
@@ -65,10 +62,10 @@ class BalanceRpcSource(
         val responseBody = response.bodyAsText()
         val responseElement = Json.parseToJsonElement(responseBody).jsonObject
         val result = if (responseElement.containsKey("error")) {
-            throw RpcError(responseElement.get("error").jsonObject.get("message").jsonPrimitive.content)
+            throw RpcError(responseElement.get("error")?.jsonObject?.get("message")?.jsonPrimitive?.content)
         } else {
-            val result = responseElement.get("result").jsonObject
-            if (result.isEmpty()) {
+            val result = responseElement.get("result")?.jsonObject
+            if (result.isNullOrEmpty()) {
                 throw RpcError("Invalid response: empty result")
             } else {
                 result.jsonPrimitive.content
@@ -79,7 +76,55 @@ class BalanceRpcSource(
         )
     }
 
-    private fun getERC20Balance(accountAddress: String, assets: List<Asset>) {
+    private suspend fun getERC20Balance(accountAddress: String, assets: List<Asset>): List<List<Balance>> {
+        if (assets.isEmpty()) {
+            return emptyList()
+        }
+        val butchItems = assets.mapNotNull { it.getAssetAddress() }.map {
+            val dataJson = JsonObject(
+                mapOf(
+                    "from" to JsonPrimitive(accountAddress),
+                    "to" to JsonPrimitive(it.value),
+                    "data" to JsonPrimitive(accountAddress.toContractFunction()),
+                )
+            )
+            JsonObject(
+                mapOf(
+                    "id" to JsonPrimitive(requestIdProvider.getNextId()),
+                    "jsonrpc" to JsonPrimitive("2.0"),
+                    "method" to JsonPrimitive(RpcMethod.eth_call.name),
+                    "params" to JsonArray(
+                        listOf(
+                            dataJson,
+                            JsonPrimitive(BlockParameter.latest.name)
+                        )
+                    )
+                )
+            )
+        }
+        val requestBuilder = HttpRequestBuilder()
+        requestBuilder.header("Cache-Control", "no-cache")
+        requestBuilder.method = HttpMethod.Post
+        requestBuilder.setBody(JsonArray(butchItems).toString())
 
+        val response = client.get(builder = requestBuilder)
+        if (!(response.status.value in 200..299)) {
+            throw RpcError("Invalid response received: ${response.bodyAsText()}")
+        }
+
+        val responseBody = response.bodyAsText()
+        val jsonResponse = Json.parseToJsonElement(responseBody).jsonArray
+        return jsonResponse.map {
+            val value = it.jsonObject["result"]?.jsonPrimitive?.content?.decodeAsUInt256ABI() ?: BigInteger.ZERO
+            listOf(Available(value = value))
+        }
     }
+}
+
+private fun String.toContractFunction(): String {
+    return ""
+}
+
+private fun String.decodeAsUInt256ABI(): BigInteger? {
+    return null
 }
