@@ -14,6 +14,7 @@ import kotlinx.serialization.json.*
 
 class BalanceRpcSource(
     private val client: HttpClient,
+    private val abi: Abi,
     private val requestIdProvider: RequestIdProvider = IncreaseRequestIdProvider(),
 ) : BalanceRpcSource {
 
@@ -85,7 +86,7 @@ class BalanceRpcSource(
                 mapOf(
                     "from" to JsonPrimitive(accountAddress),
                     "to" to JsonPrimitive(it.value),
-                    "data" to JsonPrimitive(accountAddress.toContractFunction()),
+                    "data" to JsonPrimitive(abi.toContractFunction(accountAddress)),
                 )
             )
             JsonObject(
@@ -115,16 +116,8 @@ class BalanceRpcSource(
         val responseBody = response.bodyAsText()
         val jsonResponse = Json.parseToJsonElement(responseBody).jsonArray
         return jsonResponse.map {
-            val value = it.jsonObject["result"]?.jsonPrimitive?.content?.decodeAsUInt256ABI() ?: BigInteger.ZERO
+            val value = abi.decodeUInt256ABI(it.jsonObject["result"]?.jsonPrimitive?.content ?: "0") ?: BigInteger.ZERO
             listOf(Available(value = value))
         }
     }
-}
-
-private fun String.toContractFunction(): String {
-    return ""
-}
-
-private fun String.decodeAsUInt256ABI(): BigInteger? {
-    return null
 }
