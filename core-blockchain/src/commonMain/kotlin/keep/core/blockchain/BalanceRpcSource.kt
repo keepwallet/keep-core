@@ -6,5 +6,5 @@ import keep.core.model.Chain
 
 interface BalanceRpcSource {
     fun getChain(): Chain
-    suspend fun getBalances(assets: List<Asset>): List<List<Balance>>
+    suspend fun getBalances(accountAddress: String, assets: List<Asset>): List<List<Balance>>
 }
