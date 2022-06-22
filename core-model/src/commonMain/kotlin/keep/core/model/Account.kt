@@ -2,6 +2,6 @@ package keep.core.model
 
 data class Account(
     val chain: Chain,
-    val derivation: String,
+    val derevationIndex: Int,
     val address: Address,
 )

@@ -1,5 +1,6 @@
 package keep.core.crypto
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
 import keep.core.model.Account
 import keep.core.model.Address
 import keep.core.model.Asset
