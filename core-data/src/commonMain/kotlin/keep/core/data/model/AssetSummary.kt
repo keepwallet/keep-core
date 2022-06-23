@@ -1,6 +1,6 @@
 package keep.core.data.model
 
-import keep.core.data.Balances
+import keep.core.data.balances.Balances
 import keep.core.model.Account
 import keep.core.model.Asset
 import keep.core.model.Ticker

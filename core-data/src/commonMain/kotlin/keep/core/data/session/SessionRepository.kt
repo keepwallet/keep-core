@@ -1,12 +1,12 @@
-package keep.core.data
+package keep.core.data.session
 
 import keep.core.crypto.model.Wallet
 import keep.core.data.model.Session
 
 interface SessionRepository {
-    suspend fun setWallet(wallet: Wallet): Boolean
+    suspend fun change(wallet: Wallet): Boolean
 
-    fun currentSession(): Session
+    fun current(): Session
 
     fun addOnSessionListener(onSessionChange: OnSessionChange)
 }

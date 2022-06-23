@@ -1,4 +1,4 @@
-package keep.core.data
+package keep.core.data.tickers
 
 import keep.core.data.model.Session
 import keep.core.model.Asset
