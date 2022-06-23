@@ -1,6 +1,8 @@
-package keep.core.crypto
+package keep.core.crypto.impl
 
-class StubEntropyGenerator : EntropyGenerator {
+import keep.core.crypto.EntropyGenerator
+
+class FakeEntropyGenerator : EntropyGenerator {
     override fun generate(): ByteArray {
         val array = ByteArray(16)
         array.fill(1)
