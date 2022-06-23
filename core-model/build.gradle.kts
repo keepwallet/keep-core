@@ -28,7 +28,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.ionspin.kotlin:bignum:0.3.6")
+                api("com.ionspin.kotlin:bignum:0.3.6")
             }
         }
         val commonTest by getting {
