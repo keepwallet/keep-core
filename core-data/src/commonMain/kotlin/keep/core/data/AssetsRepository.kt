@@ -1,19 +1,23 @@
 package keep.core.data
 
+import keep.core.data.model.AssetSummary
+import keep.core.data.model.Session
 import keep.core.model.Account
 import keep.core.model.Asset
 
 interface AssetsRepository {
 
-    suspend fun getAssets(): List<AssetSummary>
+    suspend fun getAssets(session: Session): List<AssetSummary>
 
-    suspend fun getAssets(account: Account): List<AssetSummary>
+    suspend fun getAssets(session: Session, account: Account): List<AssetSummary>
 
-    suspend fun addAsset(account: Account, asset: Asset): Boolean
+    suspend fun getAssets(session: Session, id: String): List<AssetSummary>
 
-    suspend fun removeAsset(account: Account, asset: Asset): Boolean
+    suspend fun addAsset(session: Session, account: Account, asset: Asset): Boolean
 
-    suspend fun getAssetById(account: Account, id: String): AssetSummary?
+    suspend fun removeAsset(session: Session, account: Account, asset: Asset): Boolean
 
-    suspend fun searchAssetsByName(name: String): List<AssetSummary>
+    suspend fun getAssetById(session: Session, account: Account, id: String): AssetSummary?
+
+    suspend fun searchAssetsByName(session: Session, name: String): List<AssetSummary>
 }
