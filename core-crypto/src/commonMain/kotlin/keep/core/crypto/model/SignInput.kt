@@ -1,4 +1,4 @@
-package keep.core.crypto
+package keep.core.crypto.model
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import keep.core.model.Account

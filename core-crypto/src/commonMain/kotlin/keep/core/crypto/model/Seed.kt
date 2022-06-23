@@ -1,4 +1,4 @@
-package keep.core.crypto
+package keep.core.crypto.model
 
 data class Seed(
     val data: ByteArray,

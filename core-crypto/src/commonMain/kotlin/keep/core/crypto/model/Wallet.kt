@@ -1,4 +1,4 @@
-package keep.core.crypto
+package keep.core.crypto.model
 
 import keep.core.model.Account
 import keep.core.model.Chain
