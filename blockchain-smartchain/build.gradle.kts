@@ -31,8 +31,6 @@ kotlin {
             dependencies {
                 implementation(project(":core-blockchain"))
                 implementation(project(":core-model"))
-                // BigNums
-                implementation("com.ionspin.kotlin:bignum:0.3.6")
                 // Ktor
                 implementation("io.ktor:ktor-client-core:2.0.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
