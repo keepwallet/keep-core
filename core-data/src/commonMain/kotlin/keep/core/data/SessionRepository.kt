@@ -1,5 +1,6 @@
 package keep.core.data
 
+import keep.core.crypto.model.Wallet
 import keep.core.data.model.Session
 
 interface SessionRepository {
