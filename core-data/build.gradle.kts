@@ -5,7 +5,7 @@ plugins {
     id("com.android.library")
 }
 
-val libName = "CoreCrypto"
+val libName = "CoreData"
 version = "1.0"
 
 kotlin {
@@ -28,7 +28,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":core-model"))
+                api(project(":core-crypto"))
             }
         }
         val commonTest by getting {
