@@ -5,9 +5,9 @@ import keep.core.model.Asset
 import keep.core.model.Ticker
 
 interface TickerRepository {
-    suspend fun getTicker(session: Session, asset: Asset): Ticker
+    suspend fun getTicker(asset: Asset): Ticker
 
-    suspend fun setTicker(session: Session, asset: Asset, ticker: Ticker): Boolean
+    suspend fun setTicker(asset: Asset, ticker: Ticker): Boolean
 
     fun setOnTickersListener(listener: OnTickersListener)
 }

@@ -8,9 +8,9 @@ import keep.core.model.Balance
 typealias Balances = List<Balance>
 
 interface BalancesRepository {
-    suspend fun getBalances(session: Session, asset: Asset? = null): AssetSummary
+    suspend fun getBalances(asset: Asset? = null): AssetSummary
 
-    suspend fun update(session: Session, asset: Asset? = null): Boolean
+    suspend fun update(asset: Asset? = null): Boolean
 
     fun addOnBalancesListener(listener: OnBalancesListener)
 }
