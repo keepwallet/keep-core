@@ -34,7 +34,7 @@ class BalanceRpcSource(
         }
     }
 
-    override fun getChain(): Chain = Chain.BinanceSmartChain
+    override fun getChain(): Chain = Chain.BNBSmartChain
 
     override suspend fun getBalances(accountAddress: String, assets: List<Asset>): List<List<Balance>> {
         return assets.filter { it.getTokenStandard() == TokenStandard.native }

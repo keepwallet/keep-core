@@ -12,7 +12,7 @@ class Available(value: BigInteger) : Balance(value)
 class Pending(value: BigInteger) : Balance(value = value)
 class Frozen(value: BigInteger) : Balance(value = value) {
     override fun includeToTotal(chain: Chain): Boolean = when(chain) {
-        Chain.Binance -> true
+        Chain.BNBBeaconChain -> true
         else -> false
     }
 }

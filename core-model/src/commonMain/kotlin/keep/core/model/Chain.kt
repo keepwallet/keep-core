@@ -1,8 +1,8 @@
 package keep.core.model
 
 enum class Chain {
-    Binance,
+    BNBBeaconChain,
+    BNBSmartChain,
     Bitcoin,
     Ethereum,
-    BinanceSmartChain,
 }
