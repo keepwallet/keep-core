@@ -36,7 +36,7 @@ android {
         jvmTarget = "1.8"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0-beta01"
+        kotlinCompilerExtensionVersion = "1.2.0"
     }
     buildFeatures {
         compose = true
@@ -55,6 +55,10 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.3.0-alpha01")
     // Preview
     implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha01")
+    api("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha01")
+    debugApi("androidx.compose.ui:ui-tooling:1.3.0-alpha01")
+    debugApi ("androidx.customview:customview:1.2.0-alpha01")
+    debugApi("androidx.customview:customview-poolingcontainer:1.0.0-rc01")
     // Tests
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
