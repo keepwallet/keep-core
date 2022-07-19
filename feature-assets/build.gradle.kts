@@ -44,8 +44,14 @@ android {
 }
 
 dependencies {
+    implementation(project(":core-blockchain"))
+    implementation(project(":core-model"))
+    implementation(project(":core-data"))
+    implementation(project(":core-ui"))
+
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0")
     // Compose
     implementation("androidx.compose.ui:ui:1.3.0-alpha01")
     implementation("androidx.compose.material:material:1.3.0-alpha01")
