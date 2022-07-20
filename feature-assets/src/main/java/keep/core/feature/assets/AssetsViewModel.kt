@@ -2,7 +2,8 @@ package keep.core.feature.assets
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import keep.core.blockchain.ChainInfoAdapter
 import keep.core.data.assets.AssetsRepository
 import keep.core.data.model.AssetSummary
 import keep.core.data.session.SessionRepository
@@ -11,16 +12,20 @@ import keep.core.feature.assets.model.AssetsHeadUIState
 import keep.core.feature.assets.model.AssetsUIState
 import keep.core.model.KeepError
 import keep.core.model.total
+import keep.core.ui.ConversionValueFormatter
+import keep.core.ui.CryptoValueFormatter
 import keep.core.ui.theme.Green
 import keep.core.ui.theme.Red700Val
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class AssetsViewModel(
-    val assetsRepository: AssetsRepository,
-    val sessionRepository: SessionRepository,
+    private val assetsRepository: AssetsRepository,
+    private val sessionRepository: SessionRepository,
+    private val cryptoValueFormatter: CryptoValueFormatter,
+    private val conversionValueFormatter: ConversionValueFormatter,
 ) : ViewModel() {
-    private val viewModelState = MutableStateFlow(ViewModelState(true))
+    private val viewModelState = MutableStateFlow(ViewModelState(cryptoValueFormatter, conversionValueFormatter, true))
     val uiState = viewModelState
         .map { it.mapToUIState() }
         .stateIn(
@@ -65,7 +70,7 @@ class AssetsViewModel(
             val session = sessionRepository.current()
             val assets = assetsRepository.getAssets()
             val walletName = session.wallet.title
-            val walletConversionAmount = calculateWalletConversionAmount(assets).toString() // TODO: Add formatting: iOs and Android
+            val walletConversionAmount = conversionValueFormatter.format(2, calculateWalletConversionAmount(assets))
             viewModelState.update {
                 it.copy(
                     isLoading = false,
@@ -78,22 +83,25 @@ class AssetsViewModel(
     }
 
     private fun calculateWalletConversionAmount(assets: List<AssetSummary>) = assets.map {
-        val chain = it.account?.chain ?: return@map 0.0
-        val total = it.balances.total(chain)
+        val chain = it.account?.chain ?: return@map BigDecimal.ZERO
+        val total = ChainInfoAdapter.get(chain).convertFromGrain(it.balances.total(chain))
         val price = try {
-            it.ticker?.price?.toDouble() ?: return@map 0.0
+            it.ticker?.price ?: return@map BigDecimal.ZERO
         } catch (err: Throwable) {
-            return@map 0.0
+            return@map BigDecimal.ZERO
         }
-        if (total.compare(BigInteger.ZERO) < 1) {
-            0.0
+        if (total.compare(BigDecimal.ZERO) < 1) {
+            BigDecimal.ZERO
         } else {
-            price * total.doubleValue() // TODO: Convert to human readable: iOs and Android
+            total.multiply(BigDecimal.fromDouble(price))
         }
-    }.fold(0.0) { acc, element -> acc + element }
+    }.fold(BigDecimal.ZERO) { acc, element -> acc.add(element) }
 }
 
 private data class ViewModelState (
+    val cryptoValueFormatter: CryptoValueFormatter,
+    val conversionValueFormatter: ConversionValueFormatter,
+
     val isLoading: Boolean = false,
     val errors: List<KeepError> = emptyList(),
 
@@ -106,22 +114,26 @@ private data class ViewModelState (
         assets.isNotEmpty() -> {
             val assets = assets.mapNotNull {
                 val chain = it.account?.chain ?: return@mapNotNull null
-                val totalBalance = it.balances.total(chain)
+                val totalBalance = ChainInfoAdapter.get(chain).convertFromGrain(it.balances.total(chain))
                 // TODO: Convert total value to human readable and convert to conversion value
-                val conversionTotal = (it.ticker?.price?.toDouble() ?: 0.0) * totalBalance.doubleValue()
+                val conversionTotal = conversionValueFormatter.format(
+                    decimals = 2,
+                    conversionPrice = it.ticker?.price ?: 0.0,
+                    cryptoValue = totalBalance
+                )
                 AssetUIState(
                     assetId = it.asset.id,
                     iconUrl = "", // TODO: Add iconUrl processing to AssetsRepository
                     title = it.asset.name,
-                    conversionPrice = it.ticker?.price ?: "",
+                    conversionPrice = conversionValueFormatter.format(2, it.ticker?.price!!), // TODO: Handle empty price
                     conversionChanges = it.ticker?.percentChange24h?.toString() ?: "",
                     conversionChangesColor = if ((it.ticker?.percentChange24h ?: 0.0) < 0.0) {
                         Green
                     } else {
                         Red700Val
                     },
-                    amount = totalBalance.toString(), // TODO: Add formatting
-                    conversionAmount = conversionTotal.toString(), // TODO: Add formatting
+                    amount = cryptoValueFormatter.format(2, totalBalance),
+                    conversionAmount = conversionTotal,
                 )
             }
             AssetsScreenUIState.Assets(
