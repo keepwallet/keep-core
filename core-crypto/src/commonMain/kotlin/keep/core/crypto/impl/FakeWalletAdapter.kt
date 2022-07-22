@@ -16,7 +16,7 @@ class FakeWalletAdapter(
         = Seed(entropyGenerator.generate(), "")
 
     override suspend fun generateAccount(seed: Seed, chain: Chain, index: Int): Account
-        = Account(chain, 0, Address("0xabcdef123456789abc"))
+        = Account(chain = chain, derivationIndex = 0, address = Address("0xabcdef123456789abc"), title = "")
 
     override suspend fun sign(seed: Seed, input: SignInput): SignOutput = object : SignOutput {
         override val data: ByteArray
