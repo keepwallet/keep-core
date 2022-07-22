@@ -115,7 +115,6 @@ private data class ViewModelState (
             val assets = assets.mapNotNull {
                 val chain = it.account?.chain ?: return@mapNotNull null
                 val totalBalance = ChainInfoAdapter.get(chain).convertFromGrain(it.balances.total(chain))
-                // TODO: Convert total value to human readable and convert to conversion value
                 val conversionTotal = conversionValueFormatter.format(
                     decimals = 2,
                     conversionPrice = it.ticker?.price ?: 0.0,
@@ -123,7 +122,7 @@ private data class ViewModelState (
                 )
                 AssetUIState(
                     assetId = it.asset.id,
-                    iconUrl = "", // TODO: Add iconUrl processing to AssetsRepository
+                    iconUrl = it.iconUrl ?: "",
                     title = it.asset.name,
                     conversionPrice = conversionValueFormatter.format(2, it.ticker?.price!!), // TODO: Handle empty price
                     conversionChanges = it.ticker?.percentChange24h?.toString() ?: "",
