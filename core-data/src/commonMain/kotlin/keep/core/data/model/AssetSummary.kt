@@ -10,4 +10,5 @@ data class AssetSummary(
     val account: Account? = null,
     val balances: Balances = emptyList(),
     val ticker: Ticker? = null,
+    val iconUrl: String? = null,
 )
