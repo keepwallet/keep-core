@@ -48,7 +48,7 @@ dependencies {
     implementation(project(":core-model"))
     implementation(project(":core-data"))
     implementation(project(":core-ui"))
-
+    // Core
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0")
@@ -59,6 +59,8 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.0.0-alpha14")
     // Icons
     implementation("androidx.compose.material:material-icons-extended:1.3.0-alpha01")
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.1.0")
     // Preview
     implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha01")
     api("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha01")
